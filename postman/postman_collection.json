@@ -1,0 +1,34 @@
+{
+  "info": {
+    "name": "Nazgul",
+    "_postman_id": "24a78683-21a3-6fd9-52b4-7664f79b31a3",
+    "description": "",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Simple message",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"configCompleteRedirectUrl\": \"https://chat.google.com/api/bot_config_complete?token=POSTMAN_TESTS\", \n  \"eventTime\": \"2019-02-24T10:49:52.219359Z\", \n  \"message\": {\n    \"argumentText\": \"{{USER_MESSAGE}}\", \n    \"createTime\": \"2019-02-24T10:49:52.219359Z\", \n    \"name\": \"spaces/{{GCLOUD_SPACE_ID}}/messages/idmessage\", \n    \"sender\": {\n      \"avatarUrl\": \"{{USER_AVATAR}}\", \n      \"displayName\": \"{{USER_NAME}}\", \n      \"email\": \"{{USER_EMAIL}}\", \n      \"name\": \"users/{{USER_ID}}\", \n      \"type\": \"HUMAN\"\n    }, \n    \"space\": {\n      \"name\": \"spaces/{{GCLOUD_SPACE_ID}}\", \n      \"type\": \"DM\"\n    }, \n    \"text\": \"{{USER_MESSAGE}}\", \n    \"thread\": {\n      \"name\": \"spaces/{{GCLOUD_SPACE_ID}}/threads/{{GCLOUD_SPACE_THREAD_ID}}\", \n      \"retentionSettings\": {\n        \"state\": \"PERMANENT\"\n      }\n    }\n  }, \n  \"space\": {\n    \"name\": \"spaces/{{GCLOUD_SPACE_ID}}\", \n    \"type\": \"DM\"\n  }, \n  \"token\": \"{{GCLOUD_TOKEN}}\", \n  \"type\": \"MESSAGE\", \n  \"user\": {\n    \"avatarUrl\": \"{{USER_AVATAR}}\", \n    \"displayName\": \"{{USER_NAME}}\",\n    \"email\": \"{{USER_EMAIL}}\", \n    \"name\": \"users/{{USER_ID}}\", \n    \"type\": \"HUMAN\"\n  }\n}"
+        },
+        "url": {
+          "raw": "{{HOST_URL}}",
+          "host": [
+            "{{HOST_URL}}"
+          ]
+        },
+        "description": ""
+      },
+      "response": []
+    }
+  ]
+}

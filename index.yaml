@@ -1,0 +1,10 @@
+indexes:
+- kind: Nazgul
+  properties:
+  - name: user
+  - name: timestamp
+- kind: Nazgul
+  properties:
+  - name: user
+  - name: timestamp
+    direction: desc

@@ -1,20 +1,30 @@
+import json
+import os
+
 from nazgul.driver import Driver
 from nazgul.manager import Manager
 
 
 class DriverMessage(Driver):
-    user = ""
+    user_name = ""
     user_id = ""
     text = ""
     msg = {}
+    users = json.loads(os.environ.get("USERS", '{}'))
+    use_ids = False
+
+    @property
+    def user(self):
+        if self.use_ids:
+            return "<{}>".format(self.user_id)
+        return self.user_name
+
 
     def parse_request(self, request):
         self.msg = request.get_json()
 
     def set_values(self):
-        self.user = self.msg["user"]["displayName"]
-        self.user_id = self.msg["user"]["name"]
-        self.text = self.msg["message"]["text"]
+        pass
 
     def is_valid_msg(self):
         return False

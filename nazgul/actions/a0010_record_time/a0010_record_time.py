@@ -29,4 +29,4 @@ class Action(DriverAction):
 
         create({"user": self.message.user_id, "username": self.message.user, "type": type_record,
                 "timestamp": datetime.datetime.now()})
-        return '{} <{}>. {}'.format(message_1, self.message.user_id, message_2)
+        return '{}. {}'.format(message_1, message_2)

@@ -4,10 +4,16 @@ from nazgul.response import GoogleChatResponse
 
 class Message(DriverMessage):
     response = GoogleChatResponse
+    use_ids = True
 
     def set_values(self):
-        self.user = self.msg["user"]["displayName"]
         self.user_id = self.msg["user"]["name"]
+        self.user_name = self.users.get(self.user_id, {}).get("name", False)
+        if not self.user_name:
+            self.user_name = self.msg["user"]["displayName"]
+        if self.users.get(self.user_id, {}).get("alias", False):
+            self.user_id = self.users[self.user_id]["alias"]
+
         self.text = self.msg["message"]["text"]
 
     def is_valid_msg(self):

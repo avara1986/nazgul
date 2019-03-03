@@ -1,34 +1,58 @@
 {
-  "info": {
-    "name": "Nazgul",
-    "_postman_id": "24a78683-21a3-6fd9-52b4-7664f79b31a3",
-    "description": "",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "Simple message",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"configCompleteRedirectUrl\": \"https://chat.google.com/api/bot_config_complete?token=POSTMAN_TESTS\", \n  \"eventTime\": \"2019-02-24T10:49:52.219359Z\", \n  \"message\": {\n    \"argumentText\": \"{{USER_MESSAGE}}\", \n    \"createTime\": \"2019-02-24T10:49:52.219359Z\", \n    \"name\": \"spaces/{{GCLOUD_SPACE_ID}}/messages/idmessage\", \n    \"sender\": {\n      \"avatarUrl\": \"{{USER_AVATAR}}\", \n      \"displayName\": \"{{USER_NAME}}\", \n      \"email\": \"{{USER_EMAIL}}\", \n      \"name\": \"users/{{USER_ID}}\", \n      \"type\": \"HUMAN\"\n    }, \n    \"space\": {\n      \"name\": \"spaces/{{GCLOUD_SPACE_ID}}\", \n      \"type\": \"DM\"\n    }, \n    \"text\": \"{{USER_MESSAGE}}\", \n    \"thread\": {\n      \"name\": \"spaces/{{GCLOUD_SPACE_ID}}/threads/{{GCLOUD_SPACE_THREAD_ID}}\", \n      \"retentionSettings\": {\n        \"state\": \"PERMANENT\"\n      }\n    }\n  }, \n  \"space\": {\n    \"name\": \"spaces/{{GCLOUD_SPACE_ID}}\", \n    \"type\": \"DM\"\n  }, \n  \"token\": \"{{GCLOUD_TOKEN}}\", \n  \"type\": \"MESSAGE\", \n  \"user\": {\n    \"avatarUrl\": \"{{USER_AVATAR}}\", \n    \"displayName\": \"{{USER_NAME}}\",\n    \"email\": \"{{USER_EMAIL}}\", \n    \"name\": \"users/{{USER_ID}}\", \n    \"type\": \"HUMAN\"\n  }\n}"
-        },
-        "url": {
-          "raw": "{{HOST_URL}}",
-          "host": [
-            "{{HOST_URL}}"
-          ]
-        },
-        "description": ""
-      },
-      "response": []
-    }
-  ]
+	"info": {
+		"name": "Nazgul",
+		"_postman_id": "24a78683-21a3-6fd9-52b4-7664f79b31a3",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Google Chat simple message",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"configCompleteRedirectUrl\": \"https://chat.google.com/api/bot_config_complete?token=POSTMAN_TESTS\", \n  \"eventTime\": \"2019-02-24T10:49:52.219359Z\", \n  \"message\": {\n    \"argumentText\": \"{{USER_MESSAGE}}\", \n    \"createTime\": \"2019-02-24T10:49:52.219359Z\", \n    \"name\": \"spaces/{{GCLOUD_SPACE_ID}}/messages/idmessage\", \n    \"sender\": {\n      \"avatarUrl\": \"{{USER_AVATAR}}\", \n      \"displayName\": \"{{USER_NAME}}\", \n      \"email\": \"{{USER_EMAIL}}\", \n      \"name\": \"users/{{USER_ID}}\", \n      \"type\": \"HUMAN\"\n    }, \n    \"space\": {\n      \"name\": \"spaces/{{GCLOUD_SPACE_ID}}\", \n      \"type\": \"DM\"\n    }, \n    \"text\": \"hola\", \n    \"thread\": {\n      \"name\": \"spaces/{{GCLOUD_SPACE_ID}}/threads/{{GCLOUD_SPACE_THREAD_ID}}\", \n      \"retentionSettings\": {\n        \"state\": \"PERMANENT\"\n      }\n    }\n  }, \n  \"space\": {\n    \"name\": \"spaces/{{GCLOUD_SPACE_ID}}\", \n    \"type\": \"DM\"\n  }, \n  \"token\": \"{{GCLOUD_TOKEN}}\", \n  \"type\": \"MESSAGE\", \n  \"user\": {\n    \"avatarUrl\": \"{{USER_AVATAR}}\", \n    \"displayName\": \"{{USER_NAME}}\",\n    \"email\": \"{{USER_EMAIL}}\", \n    \"name\": \"users/{{USER_ID}}\", \n    \"type\": \"HUMAN\"\n  }\n}"
+				},
+				"url": {
+					"raw": "{{HOST_URL}}",
+					"host": [
+						"{{HOST_URL}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Google Action",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"originalDetectIntentRequest\": {\n    \"payload\": {\n      \"availableSurfaces\": [\n        {\n          \"capabilities\": [\n            {\n              \"name\": \"actions.capability.SCREEN_OUTPUT\"\n            }, \n            {\n              \"name\": \"actions.capability.AUDIO_OUTPUT\"\n            }, \n            {\n              \"name\": \"actions.capability.WEB_BROWSER\"\n            }\n          ]\n        }\n      ], \n      \"conversation\": {\n        \"conversationId\": \"ABwppHGEMnRXSpTWXGxylAhNQk8R-WdMhv2bjR5uiSxbyYzmRfJ9auTdtphxfnM1-CvcoDA33W-htg\", \n        \"conversationToken\": \"[\\\"input\\\"]\", \n        \"type\": \"ACTIVE\"\n      }, \n      \"inputs\": [\n        {\n          \"arguments\": [\n            {\n              \"name\": \"text\", \n              \"rawText\": \"hola\", \n              \"textValue\": \"hola\"\n            }\n          ], \n          \"intent\": \"actions.intent.TEXT\", \n          \"rawInputs\": [\n            {\n              \"inputType\": \"KEYBOARD\", \n              \"query\": \"hola\"\n            }\n          ]\n        }\n      ], \n      \"isInSandbox\": true, \n      \"requestType\": \"SIMULATOR\", \n      \"surface\": {\n        \"capabilities\": [\n          {\n            \"name\": \"actions.capability.MEDIA_RESPONSE_AUDIO\"\n          }, \n          {\n            \"name\": \"actions.capability.SCREEN_OUTPUT\"\n          }, \n          {\n            \"name\": \"actions.capability.AUDIO_OUTPUT\"\n          }, \n          {\n            \"name\": \"actions.capability.WEB_BROWSER\"\n          }\n        ]\n      }, \n      \"user\": {\n        \"lastSeen\": \"2019-03-03T08:25:25Z\", \n        \"locale\": \"es-ES\", \n        \"userId\": \"ABwppHFOxvt5vx57D_Zpag6aJzoPnI2CNp_fEvyNHPgDE3pX447sDlyDWFj6BgjmJeq2k32Eo4Llfg\"\n      }\n    }, \n    \"source\": \"google\", \n    \"version\": \"2\"\n  }, \n  \"queryResult\": {\n    \"action\": \"input.welcome\", \n    \"allRequiredParamsPresent\": true, \n    \"fulfillmentMessages\": [\n      {\n        \"text\": {\n          \"text\": [\n            \"\\u00a1Buenos d\\u00edas!\"\n          ]\n        }\n      }\n    ], \n    \"fulfillmentText\": \"\\u00a1Hola!\", \n    \"intent\": {\n      \"displayName\": \"Default Welcome Intent\", \n      \"name\": \"projects/nazgul-bot/agent/intents/25bcfe4d-94d4-4a4d-bd59-acb7ed9b230f\"\n    }, \n    \"intentDetectionConfidence\": 1.0, \n    \"languageCode\": \"es-es\", \n    \"outputContexts\": [\n      {\n        \"lifespanCount\": 5, \n        \"name\": \"projects/nazgul-bot/agent/sessions/ABwppHGEMnRXSpTWXGxylAhNQk8R-WdMhv2bjR5uiSxbyYzmRfJ9auTdtphxfnM1-CvcoDA33W-htg/contexts/input\"\n      }, \n      {\n        \"name\": \"projects/nazgul-bot/agent/sessions/ABwppHGEMnRXSpTWXGxylAhNQk8R-WdMhv2bjR5uiSxbyYzmRfJ9auTdtphxfnM1-CvcoDA33W-htg/contexts/actions_capability_screen_output\"\n      }, \n      {\n        \"name\": \"projects/nazgul-bot/agent/sessions/ABwppHGEMnRXSpTWXGxylAhNQk8R-WdMhv2bjR5uiSxbyYzmRfJ9auTdtphxfnM1-CvcoDA33W-htg/contexts/actions_capability_audio_output\"\n      }, \n      {\n        \"name\": \"projects/nazgul-bot/agent/sessions/ABwppHGEMnRXSpTWXGxylAhNQk8R-WdMhv2bjR5uiSxbyYzmRfJ9auTdtphxfnM1-CvcoDA33W-htg/contexts/google_assistant_input_type_keyboard\"\n      }, \n      {\n        \"name\": \"projects/nazgul-bot/agent/sessions/ABwppHGEMnRXSpTWXGxylAhNQk8R-WdMhv2bjR5uiSxbyYzmRfJ9auTdtphxfnM1-CvcoDA33W-htg/contexts/actions_capability_media_response_audio\"\n      }, \n      {\n        \"name\": \"projects/nazgul-bot/agent/sessions/ABwppHGEMnRXSpTWXGxylAhNQk8R-WdMhv2bjR5uiSxbyYzmRfJ9auTdtphxfnM1-CvcoDA33W-htg/contexts/actions_capability_web_browser\"\n      }\n    ], \n    \"parameters\": {}, \n    \"queryText\": \"hola\"\n  }, \n  \"responseId\": \"0436d033-037f-4bf4-ba4e-d04e19f1e6b2\", \n  \"session\": \"projects/nazgul-bot/agent/sessions/ABwppHGEMnRXSpTWXGxylAhNQk8R-WdMhv2bjR5uiSxbyYzmRfJ9auTdtphxfnM1-CvcoDA33W-htg\"\n}\n\n"
+				},
+				"url": {
+					"raw": "{{HOST_URL}}",
+					"host": [
+						"{{HOST_URL}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
 }

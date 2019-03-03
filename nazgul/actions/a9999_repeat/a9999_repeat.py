@@ -15,4 +15,4 @@ class Action(DriverAction):
         return True
 
     def response(self):
-        return '<{}> dijo {}'.format(self.message.user_id, self.message.text)
+        return '{} dijo {}'.format(self.message.user, self.message.text)

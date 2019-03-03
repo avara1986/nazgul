@@ -1,17 +1,19 @@
-from nazgul.action import ActionManager
-from nazgul.response import GoogleChatResponse
-from nazgul.message import GoogleChatMessage
+import logging
+
+from flask import Flask, request
+
+from nazgul.app import App
+from nazgul.constants import LOGGER_NAME
+
+logger = logging.getLogger(LOGGER_NAME)
 
 
 def nazgul_bot(request):
-    msg = GoogleChatMessage(request)
-    action = ActionManager(message=msg, path=__file__)
-    return GoogleChatResponse(text=action.response()).json()
+    app = App()
+    return app.run(request)
 
 
 if __name__ == "__main__":
-    from flask import Flask, request
-
     app = Flask(__name__)
 
 

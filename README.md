@@ -1,7 +1,7 @@
 # nazgul
 One bot to rule them all, one bot to find them, One bot to bring them all and in the darkness bind them.
 
-![Example](https://raw.githubusercontent.com/avara1986/nazgul/master/docs/exmaple_chat.png)
+
 
 # ENVS:
 
@@ -21,3 +21,16 @@ One bot to rule them all, one bot to find them, One bot to bring them all and in
 - Cloud Functions
 - Data Store
 - Services Accounts
+
+
+# Google Chat
+
+![Example](https://raw.githubusercontent.com/avara1986/nazgul/master/docs/exmaple_chat.png)
+
+# Google Actions:
+
+https://console.actions.google.com/u/0/
+
+https://console.dialogflow.com/
+
+https://console.actions.google.com/u/0/project/[YOUR_PROJECT_ID]/simulator/

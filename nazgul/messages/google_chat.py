@@ -18,3 +18,4 @@ class Message(DriverMessage):
 
     def is_valid_msg(self):
         return self.msg.get("message", False) and self.msg.get("message", {}).get("text", False)
+    

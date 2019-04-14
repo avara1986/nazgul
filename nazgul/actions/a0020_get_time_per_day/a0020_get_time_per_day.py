@@ -13,7 +13,7 @@ class Action(DriverAction):
 
     message = None
 
-    triggers = ['horas', ]
+    triggers = ['horas', 'horas detalle', ]
 
     @property
     def help(self):
@@ -47,4 +47,6 @@ class Action(DriverAction):
     def response(self):
         message, total_hours = self.get_hours_user(self.message.user_id)
         message += "*TOTAL: {}*".format(total_hours)
+        if not "detalle" in self.message.text.lower():
+            message = "Llevas {:4.2f} horas".format(total_hours)
         return message

@@ -12,7 +12,12 @@ class Message(DriverMessage):
         if self.users[self.user_id]["alias"]:
             self.user_id = self.users[self.user_id]["alias"]
 
-        self.text = self.msg["queryResult"]["queryText"]
+        if self.msg["queryResult"]["action"] == "input.welcome":
+            self.text = "hola"
+        elif self.msg["queryResult"]["action"] == "Horas":
+            self.text = self.msg["queryResult"]["action"]
+        else:
+            self.text = self.msg["queryResult"]["queryText"]
 
     def is_valid_msg(self):
         return self.msg.get("queryResult", False) and self.msg.get("queryResult", {}).get("queryText", False)

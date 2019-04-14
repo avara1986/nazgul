@@ -16,7 +16,7 @@ One bot to rule them all, one bot to find them, One bot to bring them all and in
 # Create Datastore indexes:
 
     gcloud datastore indexes create index.yaml
-
+ 
 # Permissions on Gcloud:
 - Cloud Functions
 - Data Store

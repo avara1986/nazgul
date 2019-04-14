@@ -26,6 +26,6 @@ class Action(DriverAction):
         elif "hola" in self.message.text.lower() or "google_assistant_welcome" in self.message.text.lower():
             message_1 = "Buenas"
             message_2 = CHECKIN_MESSAGES[randint(0, len(CHECKOUT_MESSAGES) - 1)]
-
-        return "{} {}. {}. teclea 'r' o 'registrar' para registrar entrada y salida automáticamente.".format(
+        # . teclea 'r' o 'registrar' para registrar entrada y salida automáticamente.
+        return "{} {}. {}".format(
             message_1, self.message.user, message_2)

@@ -12,8 +12,8 @@ def cli(ctx, debug):
 @cli.command()
 @click.argument('msg')
 @click.pass_obj
-def record(naz, msg):
-    naz.insert_record(msg)
+def task(naz, msg):
+    naz.insert_task(msg)
 
 @cli.command()
 @click.pass_obj

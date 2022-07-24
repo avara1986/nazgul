@@ -4,7 +4,7 @@ import datetime
 from nazgul.constants import DB_PATH, CHECKIN
 
 
-class Nazgul():
+class Tasks():
     def __init__(self, db_path: str = DB_PATH):
         print(f"Connect to DB {DB_PATH}")
         self.con = sqlite3.connect(db_path)
@@ -26,8 +26,5 @@ class Nazgul():
         with self.con as con:
             rows = con.execute("select * from tasks msg='?' order by ts desc limit 0,1", (msg,)).fetchall()
 
-
     def __call__(self):
         print("Nazgul")
-
-

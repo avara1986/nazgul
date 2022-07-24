@@ -1,2 +1,0 @@
--r requirements_local.txt
-mock==2.0.0

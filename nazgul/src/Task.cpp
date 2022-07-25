@@ -5,108 +5,123 @@ using namespace std;
 #define CHECKIN "checkin"
 #define CHECKOUT "checkout"
 
-namespace models {
+int Task::connect(string db_path) {
+    int rc;
 
-    // Default constructor
-    Task::Task() {}
+    rc = sqlite3_open(db_path.c_str(), &db);
 
-    // Destructor
-    Task::~Task() = default;
+    if (rc) {
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        return -1;
+    } else {
+        fprintf(stderr, "Opened database successfully\n");
+    }
+    return 0;
+}
 
-    int Task::connect(char *db_path) {
-        int rc;
+void Task::close() {
+    sqlite3_close(db);
+}
 
-        rc = sqlite3_open(db_path, &db);
+int Task::createDb() {
+    char *zErrMsg = nullptr;
+    int rc;
+    const char *sql = "CREATE TABLE tasks" \
+      "(id integer primary key, ts timestamp, msg text, check_type varchar)";
 
-        if (rc) {
-            fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-            return -1;
-        } else {
-            fprintf(stderr, "Opened database successfully\n");
+    /* Execute SQL statement */
+    rc = sqlite3_exec(db, sql, NULL, 0, &zErrMsg);
+
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "SQL error: %s\n", zErrMsg);
+        sqlite3_free(zErrMsg);
+    } else {
+        fprintf(stdout, "Table created successfully\n");
+    }
+    return 0;
+}
+
+int Task::insert(string msg, string check = CHECKIN) {
+    sqlite3_stmt *stmt;
+    int rc;
+    char *zErrMsg = nullptr;
+    const char *istmt = "INSERT INTO tasks(ts, msg, check_type) VALUES (?, ?, ?);";
+
+    /* Validate type of check */
+    auto check_last_check_type = getOnceByMsg(msg);
+    if (!check_last_check_type.empty()) {
+        if(check_last_check_type[0].check == CHECKIN){
+            check = CHECKOUT;
         }
-        return 0;
     }
 
-    void Task::close() {
-        sqlite3_close(db);
+    /* Get Datetime now */
+    char time_now[19];
+    _getDatetimeNow(time_now);
+
+    /* Prepare SQL statement */
+    rc = sqlite3_prepare_v2(db, istmt, strlen(istmt), &stmt, nullptr);
+    assert(rc == SQLITE_OK);
+    sqlite3_bind_text(stmt, 1, time_now, strlen(time_now), NULL);
+    sqlite3_bind_text(stmt, 2, msg.c_str(), strlen(msg.c_str()), NULL);
+    sqlite3_bind_text(stmt, 3, check.c_str(), strlen(check.c_str()), NULL);
+
+    /* Execute SQL statement */
+    rc = sqlite3_step(stmt);
+
+    /* Check result */
+    if (rc != SQLITE_DONE) {
+        fprintf(stderr, "SQL error: %s\n", zErrMsg);
+        sqlite3_free(zErrMsg);
+    } else {
+        fprintf(stdout, "Tasks created successfully\n");
+    }
+    sqlite3_reset(stmt);
+    return 0;
+}
+
+inline vector<task> Task::_select(const string& sql) {
+    char *zErrMsg = nullptr;
+    int rc;
+    results = {};
+
+    /* Execute SQL statement */
+    rc = sqlite3_exec(db, sql.c_str(), _selectCallback, (void *) this, &zErrMsg);
+
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "SQL error: %s\n", zErrMsg);
+        sqlite3_free(zErrMsg);
+    } else {
+        fprintf(stdout, "Select done successfully\n");
     }
 
-    int Task::createDb() {
-        char *zErrMsg = 0;
-        int rc;
-        const char *sql = "CREATE TABLE tasks" \
-          "(id integer primary key, ts timestamp, msg text, kind varchar)";
+    return results;
+}
 
-        /* Execute SQL statement */
-        rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+vector<task> Task::getAll() {
+    string sql = "SELECT * FROM tasks order by ts desc";
+    return _select(sql);
+}
 
-        if (rc != SQLITE_OK) {
-            fprintf(stderr, "SQL error: %s\n", zErrMsg);
-            sqlite3_free(zErrMsg);
-        } else {
-            fprintf(stdout, "Table created successfully\n");
-        }
-        return 0;
-    }
-
-    int Task::insert(char *msg, char *kind = CHECKIN) {
-        char *zErrMsg = nullptr;
-        int rc;
-        const char *istmt = "INSERT INTO tasks(ts, msg, kind) VALUES (?, ?, ?);";
-        sqlite3_stmt *stmt;
-
-        const char *ozTest;
-        rc = sqlite3_prepare_v2(db, istmt, strlen(istmt), &stmt, &ozTest);
-        assert(rc == SQLITE_OK);
-        /* Prepare SQL statement */
-        char time_now[19];
-        getDatetimeNow(time_now);
-        sqlite3_bind_text(stmt, 1, time_now, strlen(time_now), NULL);
-        sqlite3_bind_text(stmt, 2, msg, strlen(msg), NULL);
-        sqlite3_bind_text(stmt, 3, kind, strlen(kind), NULL);
-
-        /* Execute SQL statement */
-        rc = sqlite3_step(stmt);
-
-        if (rc != SQLITE_OK) {
-            fprintf(stderr, "SQL error: %s\n", zErrMsg);
-            sqlite3_free(zErrMsg);
-        } else {
-            fprintf(stdout, "Tasks created successfully\n");
-        }
-        sqlite3_reset(stmt);
-        return 0;
-    }
-
-    int Task::get() {
-        char *zErrMsg = 0;
-        int rc;
-        const char *sql = "SELECT * FROM tasks";
-        const char *data = "Callback function called";
-
-        /* Execute SQL statement */
-        rc = sqlite3_exec(db, sql, select_callback, (void *) data, &zErrMsg);
-
-        if (rc != SQLITE_OK) {
-            fprintf(stderr, "SQL error: %s\n", zErrMsg);
-            sqlite3_free(zErrMsg);
-        } else {
-            fprintf(stdout, "Select done successfully\n");
-        }
-        sqlite3_close(db);
-        return 0;
-
-
-    }
+vector<task> Task::getOnceByMsg(string msg) {
+    string sql = "SELECT * FROM tasks WHERE msg='" + msg + "' order by ts desc limit 0,1";
+    return _select(sql);
 }
 
 
 int main(int argc, char *argv[]) {
-    auto t = models::Task();
+    auto t = Task();
     t.connect("nazgul.db");
-    // t.createDb();
-    t.insert("workday", "checkin");
-    t.get();
+    t.createDb();
+    t.insert("workday");
+    auto results = t.getAll();
+    for(auto result: results){
+        cout << "ID = " << result.id << std::endl;
+        cout << "timestamp = " << result.timestamp << std::endl;
+        cout << "msg = " << result.msg << std::endl;
+        cout << "check = " << result.check << std::endl;
+        printf("-------------\n");
+    }
     t.close();
     return 0;
 }

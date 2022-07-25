@@ -9,63 +9,63 @@
 #include <cstdio>
 #include <cstring>
 #include <cassert>
+#include <vector>
 
-namespace models {
-    class Task {
-    private:
-        sqlite3 *db{};
+using namespace std;
 
-        static void getDatetimeNow(char* datetime_string) {
-            // Current time
-            time_t t = time(nullptr);
+typedef struct _task task;
 
-            // Time to strign
-            tm* curr_tm = localtime(&t);
-            strftime(datetime_string, 50, "%Y-%m-%d %T", curr_tm);
-        }
+struct _task
+{
+    string id;
+    string timestamp;
+    string msg;
+    string check;
+};
 
-    public:
-        Task();
+class Task {
+private:
+    sqlite3 *db{};
+    vector<task> results;
 
-        Task(int x0, int y0, int x1, int y1);
+    static void _getDatetimeNow(char* datetime_string) {
+        // Current time
+        time_t t = time(nullptr);
 
-        ~Task();
+        // Time to strign
+        tm* curr_tm = localtime(&t);
+        strftime(datetime_string, 50, "%Y-%m-%d %T", curr_tm);
+    }
 
-        int connect(char *db_path);
+    static int _selectCallback(void *data, int argc, char **argv, char **azColName){
+        Task* task_inst = static_cast<Task*>(data);
+        // printf("_selectCallback called");
+        task result{argv[0], argv[1] ? argv[1] : "NULL", argv[2], argv[3]};
+        task_inst->results.push_back(result);
+        return 0;
+    }
 
-        void close();
+    inline vector<task> _select(const string& sql);
 
-        int createDb();
+public:
+    // Default constructor
+    Task() = default;
 
-        int insert(char *msg, char *kind);
+    // Destructor
+    ~Task() = default;
 
-        int get();
+    int connect(string db_path);
 
-        void create(char *msg, char *kind);
+    void close();
 
-        void move(int dx, int dy);
+    int createDb();
 
-        static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
-            int i;
-            for (i = 0; i < argc; i++) {
-                printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-            }
-            printf("\n");
-            return 0;
-        }
+    int insert(string msg, string check);
 
-        static int select_callback(void *data, int argc, char **argv, char **azColName){
-            int i;
-            fprintf(stderr, "%s: ", (const char*)data);
+    vector<task> getAll();
 
-            for(i = 0; i<argc; i++){
-                printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-            }
+    vector<task> getOnceByMsg(string msg);
+};
 
-            printf("\n");
-            return 0;
-        }
-    };
-}
 
 #endif

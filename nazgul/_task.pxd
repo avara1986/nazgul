@@ -1,5 +1,6 @@
-from libcpp.vector cimport vector
 from libcpp.string cimport string
+from libcpp.vector cimport vector
+
 
 cdef extern from "src/Task.hpp":
     ctypedef struct task:

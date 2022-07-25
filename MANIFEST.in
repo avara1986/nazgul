@@ -1,0 +1,3 @@
+include nazgul/db/nazgul.db
+global-exclude *.cpp
+global-exclude *.hpp

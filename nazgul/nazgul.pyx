@@ -1,6 +1,6 @@
 import datetime
 
-from _task cimport Task, vector, task, string
+from _task cimport Task, string, task, vector
 
 cdef string CHECKIN = "checkin"
 cdef string CHECKOUT = "checkout"
@@ -45,8 +45,8 @@ cdef class Nazgul():
         week_start = (now - datetime.timedelta(days=now.weekday())).replace(hour=0, minute=0, second=0, microsecond=0)
         week_end = (week_start + datetime.timedelta(days=6)).replace(hour=23, minute=59, second=59, microsecond=0)
 
-        message = "*Recuperando datos de la semana del {} al {}*\n".format(week_start.strftime("%Y-%m-%d"),
-                                                                           week_end.strftime("%Y-%m-%d"))
+        message = "*Week since {} till {}*\n".format(week_start.strftime("%Y-%m-%d"),
+                                                     week_end.strftime("%Y-%m-%d"))
         total_hours = 0
 
         cdef Task t = self.init_db()
@@ -73,10 +73,9 @@ cdef void main():
     t.createDb()
     t.insert("workday", CHECKIN)
     results = t.getAll()
-    for result in  results:
+    for result in results:
         print("ID = " + result.id)
         print("timestamp = " + result.timestamp)
         print("msg = " + result.msg)
         print("check = " + result.check)
     t.close()
-

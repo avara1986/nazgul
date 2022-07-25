@@ -7,6 +7,7 @@ from nazgul.nazgul import Nazgul
 CURRENT_DIR = pathlib.Path(__file__).parent.resolve()
 DB_PATH = str(CURRENT_DIR / "db" / "nazgul.db")
 
+
 @click.group()
 @click.option('--debug/--no-debug', default=False)
 @click.pass_context
@@ -20,10 +21,12 @@ def cli(ctx, debug):
 def task(naz, msg: str):
     naz.insert_task(msg, "checkin")
 
+
 @cli.command()
 @click.pass_obj
 def init(naz):
     naz.create_db()
+
 
 @cli.command()
 @click.pass_obj
@@ -34,6 +37,7 @@ def list(naz):
         print(b"timestamp = " + result["timestamp"])
         print(b"msg = " + result["msg"])
         print(b"check = " + result["check"])
+
 
 @cli.command()
 @click.pass_obj

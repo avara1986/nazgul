@@ -45,8 +45,6 @@ private:
         return 0;
     }
 
-    inline vector<task> _select(const string& sql);
-
 public:
     // Default constructor
     Task() = default;
@@ -60,11 +58,13 @@ public:
 
     int createDb();
 
-    int insert(string msg, string check);
+    int insert(const string& msg, string check);
 
     vector<task> getAll();
 
     vector<task> getOnceByMsg(string msg);
+
+    inline vector<task> query(const string& sql);
 };
 
 

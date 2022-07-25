@@ -41,7 +41,7 @@ int Task::createDb() {
     return 0;
 }
 
-int Task::insert(string msg, string check = CHECKIN) {
+int Task::insert(const string& msg, string check = CHECKIN) {
     sqlite3_stmt *stmt;
     int rc;
     char *zErrMsg = nullptr;
@@ -80,7 +80,7 @@ int Task::insert(string msg, string check = CHECKIN) {
     return 0;
 }
 
-inline vector<task> Task::_select(const string& sql) {
+inline vector<task> Task::query(const string& sql) {
     char *zErrMsg = nullptr;
     int rc;
     results = {};
@@ -100,12 +100,12 @@ inline vector<task> Task::_select(const string& sql) {
 
 vector<task> Task::getAll() {
     string sql = "SELECT * FROM tasks order by ts desc";
-    return _select(sql);
+    return query(sql);
 }
 
 vector<task> Task::getOnceByMsg(string msg) {
     string sql = "SELECT * FROM tasks WHERE msg='" + msg + "' order by ts desc limit 0,1";
-    return _select(sql);
+    return query(sql);
 }
 
 

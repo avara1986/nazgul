@@ -1,3 +1,7 @@
 include nazgul/db/nazgul.db
-global-exclude *.cpp
-global-exclude *.hpp
+include nazgul/*.pyx
+include nazgul/*.pxd
+include nazgul/src/*.cpp
+include nazgul/srpc/*.hpp
+exclude nazgul/*.so
+global-exclude venv

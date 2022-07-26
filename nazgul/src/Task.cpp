@@ -2,9 +2,6 @@
 
 using namespace std;
 
-#define CHECKIN "checkin"
-#define CHECKOUT "checkout"
-
 int Task::connect(string db_path) {
     int rc;
 
@@ -14,7 +11,7 @@ int Task::connect(string db_path) {
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
         return -1;
     } else {
-        fprintf(stderr, "Opened database successfully\n");
+        // fprintf(stderr, "Opened database successfully\n");
     }
     return 0;
 }
@@ -27,7 +24,7 @@ int Task::createDb() {
     char *zErrMsg = nullptr;
     int rc;
     const char *sql = "CREATE TABLE tasks" \
-      "(id integer primary key, ts timestamp, msg text, check_type varchar)";
+      "(id integer primary key, ts timestamp, msg text, kind_type varchar, check_type varchar)";
 
     /* Execute SQL statement */
     rc = sqlite3_exec(db, sql, NULL, 0, &zErrMsg);
@@ -41,11 +38,11 @@ int Task::createDb() {
     return 0;
 }
 
-int Task::insert(const string& msg, string check = CHECKIN) {
+int Task::insert(const string& msg, const string& kind, string check) {
     sqlite3_stmt *stmt;
     int rc;
     char *zErrMsg = nullptr;
-    const char *istmt = "INSERT INTO tasks(ts, msg, check_type) VALUES (?, ?, ?);";
+    const char *istmt = "INSERT INTO tasks(ts, msg, kind_type, check_type) VALUES (?, ?, ?, ?);";
 
     /* Validate type of check */
     auto check_last_check_type = getOnceByMsg(msg);
@@ -64,17 +61,18 @@ int Task::insert(const string& msg, string check = CHECKIN) {
     assert(rc == SQLITE_OK);
     sqlite3_bind_text(stmt, 1, time_now, strlen(time_now), NULL);
     sqlite3_bind_text(stmt, 2, msg.c_str(), strlen(msg.c_str()), NULL);
-    sqlite3_bind_text(stmt, 3, check.c_str(), strlen(check.c_str()), NULL);
+    sqlite3_bind_text(stmt, 3, kind.c_str(), strlen(kind.c_str()), NULL);
+    sqlite3_bind_text(stmt, 4, check.c_str(), strlen(check.c_str()), NULL);
 
     /* Execute SQL statement */
     rc = sqlite3_step(stmt);
 
     /* Check result */
     if (rc != SQLITE_DONE) {
-        fprintf(stderr, "SQL error: %s\n", zErrMsg);
+        fprintf(stderr, "SQL INSERT error(%d): %s\n", rc, zErrMsg);
         sqlite3_free(zErrMsg);
     } else {
-        fprintf(stdout, "Tasks created successfully\n");
+        // fprintf(stdout, "Tasks created successfully\n");
     }
     sqlite3_reset(stmt);
     return 0;
@@ -89,10 +87,10 @@ inline vector<task> Task::query(const string& sql) {
     rc = sqlite3_exec(db, sql.c_str(), _selectCallback, (void *) this, &zErrMsg);
 
     if (rc != SQLITE_OK) {
-        fprintf(stderr, "SQL error: %s\n", zErrMsg);
+        fprintf(stderr, "SQL error: %s\nQUERY: %s\n", zErrMsg, sql.c_str());
         sqlite3_free(zErrMsg);
     } else {
-        fprintf(stdout, "Select done successfully\n");
+        // fprintf(stdout, "Select done successfully\n");
     }
 
     return results;
@@ -103,8 +101,18 @@ vector<task> Task::getAll() {
     return query(sql);
 }
 
+vector<task> Task::getWorkdays() {
+    string sql = "SELECT * FROM tasks WHERE kind_type = 'workday' ORDER BY ts DESC";
+    return query(sql);
+}
+
+vector<task> Task::getTaskOfWorkdays(string date_start, string date_end) {
+    string sql = "SELECT * FROM tasks WHERE kind_type != 'workday' AND ts >= '" + date_start + "' AND ts <= '" + date_end + "' ORDER BY ts DESC";
+    return query(sql);
+}
+
 vector<task> Task::getOnceByMsg(string msg) {
-    string sql = "SELECT * FROM tasks WHERE msg='" + msg + "' order by ts desc limit 0,1";
+    string sql = "SELECT * FROM tasks WHERE msg='" + msg + "' ORDER BY ts DESC LIMIT 0,1";
     return query(sql);
 }
 
@@ -113,13 +121,14 @@ int main(int argc, char *argv[]) {
     auto t = Task();
     t.connect("nazgul.db");
     t.createDb();
-    t.insert("workday");
+    t.insert("workday", "workday", CHECKIN);
     auto results = t.getAll();
     for(auto result: results){
         cout << "ID = " << result.id << std::endl;
         cout << "timestamp = " << result.timestamp << std::endl;
         cout << "msg = " << result.msg << std::endl;
         cout << "check = " << result.check << std::endl;
+        cout << "kind = " << result.kind << std::endl;
         printf("-------------\n");
     }
     t.close();

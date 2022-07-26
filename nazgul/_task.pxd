@@ -7,6 +7,7 @@ cdef extern from "src/Task.hpp":
         string id;
         string timestamp;
         string msg;
+        string kind;
         string check;
 
     cdef cppclass Task:
@@ -15,5 +16,8 @@ cdef extern from "src/Task.hpp":
         void close();
         int createDb();
         int insert(string msg);
-        int insert(string msg, string check);
+        int insert(string msg, string kind);
+        int insert(string msg, string kind, string check);
         vector[task] getAll();
+        vector[task] getWorkdays();
+        vector[task] getTaskOfWorkdays(string date_start, string date_end);

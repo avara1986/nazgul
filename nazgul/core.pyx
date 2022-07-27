@@ -1,6 +1,6 @@
 import datetime
 
-from _task cimport Task, string, task, vector
+from _task cimport Task, string, task, vector, week_report, day_report, task_report
 
 
 cpdef string CHECK_IN = "checkin"
@@ -48,7 +48,7 @@ cdef class Nazgul:
         cdef Task t = self.init_db()
         return t.getAll()
 
-    cpdef dict get_week_tasks(self):
+    cpdef week_report get_week_tasks(self):
         now = datetime.datetime.now()
         week_start = (now - datetime.timedelta(days=now.weekday())).replace(hour=0, minute=0, second=0, microsecond=0)
         week_end = (week_start + datetime.timedelta(days=6)).replace(hour=23, minute=59, second=59, microsecond=0)
@@ -61,62 +61,50 @@ cdef class Nazgul:
         cdef Task t = self.init_db()
         cdef vector[task] tasks_and_breaks
         cdef vector[task] workdays = t.getWorkdays()
-        days_result = {
-            "total": 0,
-            "days": []
-        }
+        cdef week_report week_result
+        cdef day_report day_result
+        cdef task_report task_result
 
         for i in range(0, workdays.size()):
             try:
                 if workdays[i].check == CHECK_OUT and workdays[i + 1].check == CHECK_IN:
-                    day_data = {
-                        "start": "",
-                        "end": "",
-                        "total_time": 0,
-                        "rest_time": 0,
-                        "tasks": []
-                    }
+                    day_result = {}
                     s_from = workdays[i + 1].timestamp
                     date_from = datetime.datetime.strptime(s_from.decode("utf-8"), '%Y-%m-%d %H:%M:%S')
                     s_to = workdays[i].timestamp
                     date_to = datetime.datetime.strptime(s_to.decode("utf-8"), '%Y-%m-%d %H:%M:%S')
                     hours_workday = (date_to - date_from).seconds / 3600
                     total_hours += hours_workday
-                    day_data["start"] = s_from
-                    day_data["end"] = s_to
-                    day_data["total_time"] = hours_workday
+                    day_result.start = s_from
+                    day_result.end = s_to
+                    day_result.total_time = hours_workday
                     # msg = "* [{date_from} - {date_to}] {msg}:* {hours}\n".format(msg=workdays[i].msg, date_from=s_from, date_to=s_to,
                     #                                                            hours=hours_workday)
                     # print("DEBUG: %s" % msg)
                     # message += msg
                     tasks_and_breaks = t.getTaskOfWorkdays(s_from, s_to)
                     # print("DEBUG: getTaskOfWorkdays  %s" % tasks_and_breaks.size())
-                    day_data["tasks"] = []
                     for j in range(0, tasks_and_breaks.size()):
                         if tasks_and_breaks[j].check == CHECK_OUT and tasks_and_breaks[j + 1].check == CHECK_IN:
-                            task_data = {
-                                "start": "",
-                                "end": "",
-                                "task": "",
-                                "total_time": 0,
-                            }
+                            task_result = {}
+
                             s_from = tasks_and_breaks[j + 1].timestamp
                             date_from = datetime.datetime.strptime(s_from.decode("utf-8"), '%Y-%m-%d %H:%M:%S')
                             s_to = tasks_and_breaks[j].timestamp
                             date_to = datetime.datetime.strptime(s_to.decode("utf-8"), '%Y-%m-%d %H:%M:%S')
                             hours_break = (date_to - date_from).seconds / 3600
 
-                            task_data["start"] = s_from
-                            task_data["end"] = s_to
-                            task_data["task"] = tasks_and_breaks[j]
-                            task_data["total_time"] = hours_break
-                            day_data["tasks"].append(task_data)
+                            task_result.start = s_from
+                            task_result.end = s_to
+                            task_result._task = tasks_and_breaks[j]
+                            task_result.total_time = hours_break
+                            day_result.tasks.push_back(task_result)
                             if tasks_and_breaks[j].kind == KIND_BREAK:
-                                day_data["rest_time"] += hours_break
-                    days_result["days"].append(day_data)
+                                day_result.rest_time += hours_break
+                    week_result.days.push_back(day_result)
             except IndexError as e:
                 print("ERROR: %s" % e)
-        return days_result
+        return week_result
 
 cdef void main():
     cdef Task t = Task()

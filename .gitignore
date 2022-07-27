@@ -112,4 +112,3 @@ venv.bak/
 /nazgul/src/cmake-build-debug/*
 /nazgul/src/cmake-build-default/
 /nazgul/core.cpp
-/nazgul/db/nazgul.db

@@ -50,7 +50,7 @@ def stop(naz):
 def init(naz):
     if not os.path.isdir(NAZGUL_CONFIG_PATH):
         print(f"Create config directory {NAZGUL_CONFIG_PATH}")
-        os.makedirs(DB_PATH, exist_ok=True)
+        os.makedirs(NAZGUL_CONFIG_PATH, exist_ok=True)
     print(f"Create Database in {DB_PATH}")
     naz.create_db()
 
@@ -101,8 +101,8 @@ def week(naz):
             for task in day["tasks"]:
                 table.add_row(
                     str(task["start"], encoding="utf-8"),
-                    str(task["task"]["msg"], encoding="utf-8"),
-                    str(task["task"]["kind"], encoding="utf-8"),
+                    str(task["_task"]["msg"], encoding="utf-8"),
+                    str(task["_task"]["kind"], encoding="utf-8"),
                     "{:.2f}".format(task["total_time"]),
                 )
             console = Console()

@@ -103,7 +103,7 @@ def week(naz):
                     str(task["start"], encoding="utf-8"),
                     str(task["_task"]["msg"], encoding="utf-8"),
                     str(task["_task"]["kind"], encoding="utf-8"),
-                    "{:.2f}".format(task["total_time"]),
+                    "{:.2f} (0:{} mins)".format(task["total_time"], str(int(task["total_time"] * 60)).zfill(2)),
                 )
             console = Console()
             console.print(table)

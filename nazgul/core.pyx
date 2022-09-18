@@ -78,6 +78,44 @@ cdef class Nazgul:
                     day_result.rest_time += hours_break
         return 0
 
+    cpdef dict get_week_report(self):
+        results = {
+            "total_days": 0,
+            "total_hours": 0,
+            "mean": 0,
+            "weeks": [],
+        }
+        cdef week_report result
+        cdef float hours
+        now = datetime.datetime.now()
+        date_time_str = '18/09/19 01:55:19'
+
+        first_day = datetime.datetime.strptime('2022-08-01', '%Y-%m-%d')
+        i = 0
+        while now > first_day:
+            now = datetime.datetime.now() - datetime.timedelta((i * 7))
+            week_start = (now - datetime.timedelta(days=now.weekday())).replace(hour=0, minute=0, second=0, microsecond=0)
+            week_end = (week_start + datetime.timedelta(days=6)).replace(hour=23, minute=59, second=59, microsecond=0)
+
+            result = self.get_list_tasks(<string> bytes(week_start.strftime("%Y-%m-%d"), encoding="utf-8"),
+                                <string> bytes(week_end.strftime("%Y-%m-%d"), encoding="utf-8"))
+
+            hours = day_hours = 0
+            for day in result.days:
+                day_hours = day.total_time - day.rest_time
+                hours += day_hours
+                results["total_hours"] += day_hours
+                results["total_days"] += 1
+            results["weeks"].append({
+                "msg": "*Week since {} till {}*\n".format(week_start.strftime("%Y-%m-%d"),
+                                                              week_end.strftime("%Y-%m-%d")),
+                "hours": hours
+            })
+            i += 1
+        results["mean"] = results["total_hours"] / results["total_days"]
+        return results
+
+
     cpdef week_report get_week_tasks(self):
         now = datetime.datetime.now()
         week_start = (now - datetime.timedelta(days=now.weekday())).replace(hour=0, minute=0, second=0, microsecond=0)
@@ -85,16 +123,20 @@ cdef class Nazgul:
 
         message: str = "*Week since {} till {}*\n".format(week_start.strftime("%Y-%m-%d"),
                                                           week_end.strftime("%Y-%m-%d"))
+        return self.get_list_tasks(<string>bytes(week_start.strftime("%Y-%m-%d"), encoding="utf-8"), <string>bytes(week_end.strftime("%Y-%m-%d"), encoding="utf-8"))
+
+    cpdef week_report get_list_tasks(self, string from_date="", string to_date=""):
+        now = datetime.datetime.now()
         msg: str = ""
         total_hours = 0
 
         cdef Task t = self.init_db()
-        cdef vector[task] workdays = t.getWorkdays()
+        cdef vector[task] workdays = t.getWorkdays(from_date, to_date)
         cdef week_report week_result
         cdef day_report day_result
         cdef bint skip_next = False
 
-        for i in range(0, workdays.size()):
+        for i in range(0, len(workdays)):
             try:
                 day_result = {}
                 if workdays[i].check == CHECK_OUT and workdays[i + 1].check == CHECK_IN:
@@ -105,9 +147,10 @@ cdef class Nazgul:
                     skip_next = False
                     continue
                 elif workdays[i].check == CHECK_IN:
-                    self.update_day(t, day_result, workdays[i].timestamp, <string>bytes(now.strftime("%Y-%m-%d %H:%M:%S"), encoding="utf-8"))
+                    self.update_day(t, day_result, workdays[i].timestamp,
+                                    <string> bytes(now.strftime("%Y-%m-%d %H:%M:%S"), encoding="utf-8"))
                     total_hours += day_result.total_time
-          
+
                 week_result.days.push_back(day_result)
             except IndexError as e:
                 print("ERROR: %s" % e)

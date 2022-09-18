@@ -19,7 +19,7 @@ cdef extern from "src/Task.hpp":
         int insert(string msg, string kind);
         int insert(string msg, string kind, string check);
         vector[task] getAll();
-        vector[task] getWorkdays();
+        vector[task] getWorkdays(string from_date, string to_date);
         vector[task] getTaskOfWorkdays(string date_start, string date_end)
 
 ctypedef struct task_report:

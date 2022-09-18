@@ -101,8 +101,12 @@ vector<task> Task::getAll() {
     return query(sql);
 }
 
-vector<task> Task::getWorkdays() {
+vector<task> Task::getWorkdays(string from_date, string to_date) {
     string sql = "SELECT * FROM tasks WHERE kind_type = 'workday' ORDER BY ts DESC";
+    if (from_date != "" && to_date != ""){
+        sql = "SELECT * FROM tasks WHERE kind_type = 'workday' AND ts >= '" + from_date + "' AND ts <= '" + to_date + "' ORDER BY ts DESC";
+    }
+
     return query(sql);
 }
 

@@ -73,7 +73,7 @@ public:
 
     vector<task> getOnceByMsg(string msg);
 
-    vector<task> getWorkdays();
+    vector<task> getWorkdays(string from_date, string to_date);
 
     vector<task> getTaskOfWorkdays(string date_start, string date_end);
 
